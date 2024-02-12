@@ -296,4 +296,7 @@ void portable_fini(core_portable *p);
 extern void uart_send_char (char);
 extern int ee_printf (const char *, ...);
 
+/* Adjust minimal runtime in seconds */
+#define CORE_MIN_RUNTIME 1
+
 #endif /* CORE_PORTME_H */
