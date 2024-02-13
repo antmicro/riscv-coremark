@@ -293,4 +293,7 @@ void portable_fini(core_portable *p);
  #endif
 #endif /* SEED_METHOD==SEED_VOLATILE */
 
+/* Measure execution time of a single iteration */
+#define MEASURE_ONE_ITER 1
+
 #endif /* CORE_PORTME_H */

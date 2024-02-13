@@ -299,4 +299,7 @@ extern int ee_printf (const char *, ...);
 /* Adjust minimal runtime in seconds */
 #define CORE_MIN_RUNTIME 1
 
+/* Measure execution time of a single iteration */
+#define MEASURE_ONE_ITER 1
+
 #endif /* CORE_PORTME_H */
