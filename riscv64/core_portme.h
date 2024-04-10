@@ -294,7 +294,7 @@ void portable_fini(core_portable *p);
 #endif /* SEED_METHOD==SEED_VOLATILE */
 
 /* Adjust minimal runtime in seconds */
-#define CORE_MIN_RUNTIME 0
+#define CORE_MIN_RUNTIME 1
 
 /* Measure execution time of a single iteration */
 #define MEASURE_ONE_ITER 1

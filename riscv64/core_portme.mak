@@ -16,6 +16,10 @@
 
 #File: core_portme.mak
 
+# Flag: TICKS_PER_SEC
+#   Hard-coded clock frequency of the tested CPU. Set to a reasonably low value
+#   when running in a RTL simulation.
+TICKS_PER_SEC ?=
 # Flag: RISCVTOOLS
 #	Use this flag to point to your RISCV tools
 RISCVTOOLS=$(RISCV)
@@ -32,6 +36,12 @@ CC = $(RISCVTOOLS)/bin/$(RISCVTYPE)-gcc
 #	Use this flag to define compiler options. Note, you can add compiler options from the command line using XCFLAGS="other flags"
 #PORT_CFLAGS = -O2 -static -std=gnu99
 PORT_CFLAGS = -O2
+ifneq ($(TICKS_PER_SEC),)
+  PORT_CFLAGS += -DEE_TICKS_PER_SEC=$(TICKS_PER_SEC)
+endif
+ifneq ($(DEBUG),)
+  PORT_CFLAGS += -DCORE_DEBUG=1
+endif
 FLAGS_STR = "$(PORT_CFLAGS) $(XCFLAGS) $(XLFLAGS) $(LFLAGS_END)"
 CFLAGS = $(PORT_CFLAGS) -I$(PORT_DIR) -I. -DFLAGS_STR=\"$(FLAGS_STR)\"
 #Flag: LFLAGS_END

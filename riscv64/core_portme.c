@@ -108,18 +108,21 @@ void portable_free(void *p) {
 	#define SAMPLE_TIME_IMPLEMENTATION 1
 #else
     // Defined for RISCV
-    #define NSECS_PER_SEC 1000000000 // TODO: What freq are we assuming?
-	#define EE_TIMER_TICKER_RATE 1000 // TODO: What is this?
+    #define NSECS_PER_SEC 1000000000 // With timer divider of 1000 this gives 1e6 ticks / s
 	#define CORETIMETYPE clock_t
     #define read_csr(reg) ({ unsigned long __tmp; \
        asm volatile ("csrr %0, " #reg : "=r"(__tmp)); \
        __tmp; })
     #define GETMYTIME(_t) (*_t=read_csr(cycle))
 	#define MYTIMEDIFF(fin,ini) ((fin)-(ini))
-	#define TIMER_RES_DIVIDER 1
+	#define TIMER_RES_DIVIDER 1000
 	#define SAMPLE_TIME_IMPLEMENTATION 1
 #endif
+
+// Allow overriding EE_TICKS_PER_SEC
+#ifndef EE_TICKS_PER_SEC
 #define EE_TICKS_PER_SEC (NSECS_PER_SEC / TIMER_RES_DIVIDER)
+#endif
 
 #if SAMPLE_TIME_IMPLEMENTATION
 /** Define Host specific (POSIX), or target specific global time variables. */
