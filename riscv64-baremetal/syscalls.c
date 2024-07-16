@@ -238,7 +238,38 @@ long atol(const char* str)
 }
 
 double modf (double num, double* iptr) {
-    int64_t ipart = (int64_t)num; // TODO: FIXME: Will overflow for |num| > 2^63
-    if (iptr) *iptr = ipart;
-    return num - (double)ipart;
+  /*
+   * Source: https://git.musl-libc.org/cgit/musl/tree/src/math/modf.c
+   * Copyright (c) 2005-2020 Rich Felker, et al.
+   * License (MIT) https://git.musl-libc.org/cgit/musl/tree/COPYRIGHT
+   */
+  union {double f; uint64_t i;} u = {num};
+  uint64_t mask;
+  int e = (int)(u.i>>52 & 0x7ff) - 0x3ff;
+
+  /* no fractional part */
+  if (e >= 52) {
+    *iptr = num;
+    if (e == 0x400 && u.i<<12 != 0) /* nan */
+      return num;
+    u.i &= 1ULL<<63;
+    return u.f;
+  }
+
+  /* no integral part*/
+  if (e < 0) {
+    u.i &= 1ULL<<63;
+    *iptr = u.f;
+    return num;
+  }
+
+  mask = -1ULL>>12>>e;
+  if ((u.i & mask) == 0) {
+    *iptr = num;
+    u.i &= 1ULL<<63;
+    return u.f;
+  }
+  u.i &= ~mask;
+  *iptr = u.f;
+  return num - u.f;
 }
